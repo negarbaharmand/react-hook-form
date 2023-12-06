@@ -1,7 +1,9 @@
+import { Skill } from "./assets/skill";
+
 function App() {
   return (
     <>
-      <h1>Hello World!</h1>
+      <Skill />
     </>
   );
 }
