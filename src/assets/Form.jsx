@@ -1,58 +1,40 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export const Form = ({ addSkill }) => {
-  const [skill, setSkill] = useState("");
-  const [error, setError] = useState("");
-  const handleChange = (e) => {
-    setSkill(e.target.value);
-    setError("");
-  };
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
-      if (skill.trim() === "") {
-        setError("This field is required.");
-        return;
-      }
-
-      addSkill(skill);
-      setSkill("");
-      setError("");
-    }
-  };
-  const buttonClickHandler = () => {
-    if (skill.trim() === "") {
-      setError("This field is required.");
+  const onSubmit = (data) => {
+    if (data.skill.trim() === "") {
       return;
     }
 
-    addSkill(skill);
-    setSkill("");
-    setError("");
+    addSkill(data.skill);
+    setValue("skill", "");
   };
+
   return (
-    <form className="form-inline">
+    <form className="form-inline" onSubmit={handleSubmit(onSubmit)}>
       <div className="row align-items-center">
         <div className="col-auto">
           <input
             type="text"
-            className={`form-control ${error ? "is-invalid" : ""}`}
+            className={`form-control ${errors.skill ? "is-invalid" : ""}`}
             id="skill"
             placeholder="Skill title"
-            value={skill}
-            onChange={handleChange}
-            onKeyDown={handleKeyPress}
+            {...register("skill", { required: "This field is required." })}
           />
-          {error && <div className="invalid-feedback">{error}</div>}
+          {errors.skill && (
+            <div className="invalid-feedback">{errors.skill.message}</div>
+          )}
         </div>
 
         <div className="col-auto">
-          <button
-            type="button"
-            className="btn btn-success ml-2"
-            onClick={buttonClickHandler}
-          >
+          <button type="submit" className="btn btn-success ml-2">
             +
           </button>
         </div>
